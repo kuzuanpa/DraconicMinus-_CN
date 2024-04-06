@@ -147,12 +147,12 @@ public class RecipeManager {
         }
     }
 
-    public static void addFusion(RecipeDifficulty difficulty, ItemStack result, ItemStack catalyst, long energyCost, int craftingTier, Object... ingredients) {
+    public static void addFusion(RecipeDifficulty difficulty, ItemStack result, ItemStack catalyst, long energyCostPerItem, int craftingTier, Object... ingredients) {
         if (difficulty != RecipeDifficulty.ALL && RecipeDifficulty.getDifficulty() != difficulty) {
             return;
         }
 
-        IFusionRecipe recipe = new SimpleFusionRecipe(result, catalyst, energyCost, craftingTier, ingredients);
+        IFusionRecipe recipe = new SimpleFusionRecipe(result, catalyst, energyCostPerItem, craftingTier, ingredients);
         activeFusion.add(recipe);
         FUSION_REGISTRY.add(recipe);
     }

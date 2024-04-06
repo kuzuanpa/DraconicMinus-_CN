@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import com.google.common.collect.AbstractIterator;
 
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.MathHelper;
 
 public class BlockPos {
@@ -93,5 +94,9 @@ public class BlockPos {
     }
 	public String toString(){
         return  "BlockPos@"+hashCode()+" [x=" + x + ", y=" + y + ", z=" + z + "] ";
+    }
+    public boolean equals(Object obj){
+        return obj instanceof BlockPos? x == ((BlockPos)obj).x && y == ((BlockPos)obj).y && z == ((BlockPos)obj).z
+        : obj instanceof ChunkCoordinates && ((ChunkCoordinates) obj).posX == x && ((ChunkCoordinates) obj).posY == y && ((ChunkCoordinates) obj).posZ == z;
     }
 }

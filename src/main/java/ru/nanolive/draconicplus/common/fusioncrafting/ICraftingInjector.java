@@ -62,7 +62,7 @@ public interface ICraftingInjector {
 
     long getEnergyRequired();
 
-    void setEnergyRequired(long num);
+    BlockPos getPos();
 
     /**
      * Called when crafting occurs. Use this event to clear the pedestals energy buffer.

@@ -21,9 +21,9 @@ public class RecipeHandler {
 	public static void init() {
 		addOre(new ItemStack(DraconicBlocks.fusionCraftingCore), new Object [] {"LDL", "DCD", "LDL", 'L', "blockLapis", 'D', "gemDiamond", 'C', ModItems.draconicCore});
 		addOre(new ItemStack(DraconicBlocks.craftingInjector, 1, 0), new Object [] {"DCD", "SIS", "SSS", 'I', "blockIron", 'D', "gemDiamond", 'C', ModItems.draconicCore, 'S', "stone"});
-		addFusion(NORMAL, new ItemStack(DraconicBlocks.craftingInjector, 1, 1), new ItemStack(DraconicBlocks.craftingInjector, 1, 0), 256000, 0, ModItems.wyvernCore, ModItems.draconicCore, ModItems.draconicCore, "blockDraconium", "gemDiamond", "gemDiamond", "gemDiamond", "gemDiamond");
-		addFusion(NORMAL, new ItemStack(DraconicBlocks.craftingInjector, 1, 2), new ItemStack(DraconicBlocks.craftingInjector, 1, 1), 1792000, 1, "gemDiamond", ModItems.wyvernCore, ModItems.wyvernCore, "gemDiamond", "gemDiamond", "blockDraconiumAwakened", "gemDiamond");
-		addFusion(NORMAL, new ItemStack(DraconicBlocks.craftingInjector, 1, 3), new ItemStack(DraconicBlocks.craftingInjector, 1, 2), 48000000, 2, "gemDiamond", ModItems.chaoticCore, "gemDiamond", "gemDiamond", Blocks.dragon_egg, "gemDiamond");
+		addFusion(NORMAL, new ItemStack(DraconicBlocks.craftingInjector, 1, 1), new ItemStack(DraconicBlocks.craftingInjector, 1, 0), 25600, 0, ModItems.wyvernCore, ModItems.draconicCore, ModItems.draconicCore, "blockDraconium", "gemDiamond", "gemDiamond", "gemDiamond", "gemDiamond");
+		addFusion(NORMAL, new ItemStack(DraconicBlocks.craftingInjector, 1, 2), new ItemStack(DraconicBlocks.craftingInjector, 1, 1), 179200, 1, "gemDiamond", ModItems.wyvernCore, ModItems.wyvernCore, "gemDiamond", "gemDiamond", "blockDraconiumAwakened", "gemDiamond");
+		addFusion(NORMAL, new ItemStack(DraconicBlocks.craftingInjector, 1, 3), new ItemStack(DraconicBlocks.craftingInjector, 1, 2), 4800000, 2, "gemDiamond", ModItems.chaoticCore, "gemDiamond", "gemDiamond", Blocks.dragon_egg, "gemDiamond");
 	}
     
     private static void addOre(ItemStack result, Object... recipe) {

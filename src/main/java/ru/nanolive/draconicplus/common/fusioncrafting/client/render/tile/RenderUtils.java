@@ -262,9 +262,9 @@ public class RenderUtils {
 
                     if (l > 0)
                     {
-                        f6 = (RenderUtils.random.nextFloat() * 2.0F - 1.0F) * 0.2F / f9;
-                        f7 = (RenderUtils.random.nextFloat() * 2.0F - 1.0F) * 0.2F / f9;
-                        float f8 = (RenderUtils.random.nextFloat() * 2.0F - 1.0F) * 0.2F / f9;
+                        f6 = (RenderUtils.random.nextFloat() * 2.0F - 1.0F) * 0.16F / f9;
+                        f7 = (RenderUtils.random.nextFloat() * 2.0F - 0.5F) * 0.16F / f9;
+                        float f8 = (RenderUtils.random.nextFloat() * 2.0F - 1.0F) * 0.16F / f9;
                         GL11.glTranslatef(f6, f7, f8);
                     }
 
@@ -290,7 +290,7 @@ public class RenderUtils {
                     }
                     else
                     {
-                        GL11.glScalef(0.5F, 0.5F, 0.5F);
+                        GL11.glScalef(0.43F, 0.43F, 0.43F);
                     }
 
                     for (int j = 0; j < itemstack.getItem().getRenderPasses(itemstack.getItemDamage()); ++j)
@@ -329,7 +329,7 @@ public class RenderUtils {
                     }
                     else
                     {
-                        GL11.glScalef(0.5F, 0.5F, 0.5F);
+                        GL11.glScalef(0.43F, 0.43F, 0.43F);
                     }
 
                     IIcon iicon = itemstack.getIconIndex();

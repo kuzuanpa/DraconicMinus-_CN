@@ -1,7 +1,5 @@
 package ru.nanolive.draconicplus.common.fusioncrafting.tiles;
 
-import java.util.List;
-
 import cofh.api.energy.IEnergyReceiver;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -13,11 +11,10 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.util.ForgeDirection;
+import ru.nanolive.draconicplus.common.fusioncrafting.BlockPos;
 import ru.nanolive.draconicplus.common.fusioncrafting.ICraftingInjector;
 import ru.nanolive.draconicplus.common.fusioncrafting.IFusionCraftingInventory;
-import ru.nanolive.draconicplus.common.fusioncrafting.blocks.CraftingInjector;
 import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableByte;
-import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableInt;
 import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableLong;
 
 /**
@@ -27,14 +24,12 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     public final SyncableByte facing = new SyncableByte((byte)0, true, false, true);
     private final SyncableLong energy = new SyncableLong(0, true, false);
-    private final SyncableLong energyRequired = new SyncableLong(0, true, false);
     public IFusionCraftingInventory currentCraftingInventory = null;
 
     public TileCraftingInjector(){
         this.setInventorySize(1);
         registerSyncableObject(facing, true);
         registerSyncableObject(energy, true);
-        registerSyncableObject(energyRequired, true);
     }
 
     public int ticker = 0;
@@ -59,16 +54,15 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
         validateCraftingInventory();
         if (currentCraftingInventory != null){
-            long maxRFPerTick = currentCraftingInventory.getIngredientEnergyCost() / 300;
-            long maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getIngredientEnergyCost() - energy.value, maxRFPerTick));
+            long maxRFPerTick = currentCraftingInventory.getEnergyCost() / 300;
+            long maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getEnergyCost() - energy.value, maxRFPerTick));
 
             if (!simulate){
                 energy.value += maxAccept;
+                ticker+=20;
             }
-
             return (int) maxAccept;
         }
-
         return 0;
     }
 
@@ -82,7 +76,7 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public int getMaxEnergyStored(ForgeDirection from) {
-        return ((int) energyRequired.value);
+        return ((int) (currentCraftingInventory==null?0:currentCraftingInventory.getEnergyCost()));
     }
 
     @Override
@@ -130,10 +124,11 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public long getEnergyRequired() {
-        return energyRequired.value;
+        return currentCraftingInventory==null?0:currentCraftingInventory.getEnergyCost();
     }
-    public void setEnergyRequired(long num) {
-        energyRequired.value=num;
+
+    public BlockPos getPos(){
+        return new BlockPos(xCoord,yCoord,zCoord);
     }
 
     private boolean validateCraftingInventory(){
@@ -183,7 +178,6 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 	        facing.value = nbttagcompound.getByte("Facing");
 	        blockMetadata = nbttagcompound.getInteger("Metadata");
          energy.value = nbttagcompound.getLong("Energy");
-         energyRequired.value = nbttagcompound.getLong("EnergyRequired");
 
 	        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
 	        this.inventoryStacks  = new ItemStack[getSizeInventory()];
@@ -203,7 +197,6 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 	        nbttagcompound.setByte("Facing", facing.value);
 	        nbttagcompound.setInteger("Metadata", blockMetadata);
         nbttagcompound.setLong("Energy", energy.value);
-        nbttagcompound.setLong("EnergyRequired", energyRequired.value);
 
 	        NBTTagList nbttaglist = new NBTTagList();
 	        for (int i = 0; i < this.inventoryStacks.length; i++) {

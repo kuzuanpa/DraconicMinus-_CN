@@ -85,7 +85,7 @@ public class FusionCraftingNEI extends TemplateRecipeHandler {
                 
             }
             
-            this.cost = recipe.getIngredientEnergyCost();
+            this.cost = recipe.getIngredientEnergyCost()*recipe.getRecipeIngredients().size();
             this.tier = recipe.getRecipeTier();
         }
 

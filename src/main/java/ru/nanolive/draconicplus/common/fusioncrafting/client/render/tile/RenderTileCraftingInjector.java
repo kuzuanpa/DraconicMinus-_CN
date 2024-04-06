@@ -18,6 +18,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import ru.nanolive.draconicplus.MoreInfo;
+import ru.nanolive.draconicplus.common.fusioncrafting.ICraftingInjector;
 import ru.nanolive.draconicplus.common.fusioncrafting.tiles.TileCraftingInjector;
 import ru.nanolive.draconicplus.common.fusioncrafting.tiles.TileFusionCraftingCore;
 import ru.nanolive.draconicplus.proxy.ClientProxy;
@@ -37,25 +38,25 @@ public class RenderTileCraftingInjector extends TileEntitySpecialRenderer {
 	    entityItem.hoverStart = 0.0F;
 	    entityItem.age = Minecraft.getMinecraft().thePlayer.ticksExisted;
 		//this.renderItem(entityItem, x, y+0.25, z+0.5, f, f, true);
-	    switch(tileI.facing.value) {
+	    if(tileI.currentCraftingInventory==null || !tileI.currentCraftingInventory.craftingInProgress() || tileI.getEnergyStored() < tileI.getEnergyRequired())switch(tileI.facing.value) {
 		case (1): {
-			RenderUtils.renderItem(entityItem, x+0.5, y+0.8, z+0.5, f, f, true, tileI.facing.value);
+			RenderUtils.renderItem(entityItem, x+0.5, y+0.9, z+0.5, f, f, true, tileI.facing.value);
 			break;
 		}
 		case (2): {
-			RenderUtils.renderItem(entityItem, x+0.5, y+0.4, z+0.15, f, f, true, tileI.facing.value);
+			RenderUtils.renderItem(entityItem, x+0.5, y+0.39, z+0.07, f, f, true, tileI.facing.value);
 			break;
 		}
 		case (3): {
-			RenderUtils.renderItem(entityItem, x+0.5, y+0.4, z+0.85, f, f, true, tileI.facing.value);
+			RenderUtils.renderItem(entityItem, x+0.5, y+0.39, z+0.93, f, f, true, tileI.facing.value);
 			break;
 		}
 		case (4): {
-			RenderUtils.renderItem(entityItem, x+0.15, y+0.4, z+0.5, f, f, true, tileI.facing.value);
+			RenderUtils.renderItem(entityItem, x+0.07, y+0.39, z+0.5, f, f, true, tileI.facing.value);
 			break;
 		}
 		case (5): {
-			RenderUtils.renderItem(entityItem, x+0.85, y+0.4, z+0.5, f, f, true, tileI.facing.value);
+			RenderUtils.renderItem(entityItem, x+0.93, y+0.39, z+0.5, f, f, true, tileI.facing.value);
 			break;
 		}
 	    }

@@ -2,25 +2,26 @@ package ru.nanolive.draconicplus.common.fusioncrafting.client.render.effect;
 
 import codechicken.lib.render.CCModelLibrary;
 import codechicken.lib.render.CCRenderState;
-import codechicken.lib.render.RenderUtils;
 import codechicken.lib.render.CCRenderState.IVertexOperation;
 import codechicken.lib.vec.Matrix4;
 import codechicken.lib.vec.Rotation;
 import codechicken.lib.vec.Scale;
 import codechicken.lib.vec.Vector3;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import ru.nanolive.draconicplus.client.particles.DPParticle;
+import ru.nanolive.draconicplus.common.fusioncrafting.BlockPos;
+import ru.nanolive.draconicplus.common.fusioncrafting.ICraftingInjector;
 import ru.nanolive.draconicplus.common.fusioncrafting.IFusionCraftingInventory;
 import ru.nanolive.draconicplus.common.fusioncrafting.Vec3D;
 import ru.nanolive.draconicplus.common.fusioncrafting.client.render.ResourceHelperDP;
-import ru.nanolive.draconicplus.common.fusioncrafting.client.render.effect.EffectTrackerFusionCrafting.SubParticle;
-import ru.nanolive.draconicplus.common.fusioncrafting.client.render.vertex.DefaultVertexFormats;
 import ru.nanolive.draconicplus.common.fusioncrafting.utils.Utils;
 
 import org.lwjgl.opengl.GL11;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by brandon3055 on 23/06/2016.
@@ -33,6 +34,7 @@ public class ParticleFusionCrafting extends DPParticle {
     private float rotation;
     private float rotationSpeed = 1;
     private boolean circleDir = false;
+    private ICraftingInjector injector;
     private float circlePos = 0;
     private float circleSpeed = 0;
     private float rotYAngle = 0;
@@ -51,6 +53,7 @@ public class ParticleFusionCrafting extends DPParticle {
         this.aRandomFloat = rand.nextFloat();
         this.rotYAngle = rand.nextFloat() * 1000;
         this.particleScale = 1F;
+        this.injector = craftingInventory.getInjectors().stream().filter(tile -> Objects.equals(tile.getPos(), new BlockPos(Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z)))).collect(Collectors.toList()).get(0);
     }
 
     @Override
@@ -125,7 +128,7 @@ public class ParticleFusionCrafting extends DPParticle {
             DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/particle/particles.png"), new SubParticle(worldObj, new Vec3D(posX, posY, posZ)));
         }
 
-        particleAlpha = craftingInventory.getCraftingStage() / 1000F;
+        particleAlpha = (float)this.injector.getInjectorCharge() / (float)(craftingInventory.getEnergyCost());
         rotationSpeed = 1 + (craftingInventory.getCraftingStage() / 1000F) * 10;
         if (particleAlpha > 1){
             particleAlpha = 1;
@@ -139,19 +142,12 @@ public class ParticleFusionCrafting extends DPParticle {
     public static Matrix4 getMatrix(Vector3 position, Rotation rotation, double scale) {
         return new Matrix4().translate(position).apply(new Scale(scale)).apply(rotation);
     }
-    
-    private static final ThreadLocal<CCRenderState> instances = ThreadLocal.withInitial(CCRenderState::new);
-    
-    public static CCRenderState instance() {
-  	    return instances.get();
-    }
-    
+
     @Override
     public void renderParticle(Tessellator tessellator, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
     	tessellator.draw();
-    	CCRenderState ccrs = instance();
-        ccrs.startDrawing();
-        ccrs.draw(); //End Draw
+        CCRenderState.startDrawing();
+        CCRenderState.draw(); //End Draw
         //region Icosahedron
 
         float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * (double) partialTicks - interpPosX);
@@ -169,16 +165,24 @@ public class ParticleFusionCrafting extends DPParticle {
 
         GL11.glRotatef(rotation + (partialTicks * rotationSpeed), 0F, 1F, 0F);
         //GlStateManager.rotate((float)Math.sin((rotation + partialTicks) * rotationSpeed / 100F) * 20F, 1F, 0F, 0F);
-        GL11.glTranslatef(-x, -y, -z);
 
-        ccrs.reset();
-        ccrs.startDrawing(GL11.GL_QUADS);
-        Matrix4 pearlMat = getMatrix(new Vector3(x, y, z), new Rotation(0F, new Vector3(0, 0, 0)), 0.15 * particleScale);
-        CCModelLibrary.icosahedron7.render(new IVertexOperation[] { (IVertexOperation)pearlMat });
-        ccrs.draw();
+        GL11.glTranslatef(-x, -y, -z);     
 
-        GL11.glPopMatrix();
-        GL11.glColor4f(1F, 1F, 1F, 1F);
+        CCRenderState.reset();
+        CCRenderState.startDrawing(GL11.GL_QUADS);
+
+        Matrix4 pearlMat = getMatrix(new Vector3(x, y, z), new Rotation(0F, new Vector3(0, 0, 0)), 0.2 * particleScale);
+
+        CCModelLibrary.icosahedron7.setColour((((int)(particleRed*255+0.5) & 0xFF) << 24) |
+                (((int)(particleGreen*255+0.5) & 0xFF) << 16) |
+                (((int)(particleBlue*255+0.5) & 0xFF) << 8)  |
+                (((int) (particleAlpha*255 + 0.5) & 0xFF))).render((IVertexOperation)pearlMat);
+        CCRenderState.draw();
+
+
+        GL11.glPopMatrix();      
+
+        GL11.glColor4f(1f, 1f, 1f, 1f);
 
         //endregion
 

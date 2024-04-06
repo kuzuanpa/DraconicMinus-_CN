@@ -227,7 +227,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     @Override
-    public long getIngredientEnergyCost() {
+    public long getEnergyCost() {
         if (activeRecipe == null) {
             return 0;
         } else {
@@ -460,7 +460,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
         if (!isCrafting.value){
             for (int i = 0; i < 100 ; i++) {
-            	DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/particle/particles.png"), new SubParticle(worldObj, new Vec3D(this.xCoord, this.yCoord, this.zCoord).add(0.5, 0.5, 0.5)));
+            	DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/particle/particles.png"), new SubParticle(worldObj, new Vec3D(this.xCoord, this.yCoord, this.zCoord).add(new Random().nextFloat(), new Random().nextFloat(), new Random().nextFloat())));
             }
 
             worldObj.playSound(this.xCoord + 0.5, this.yCoord + 0.5, this.zCoord + 0.5, MoreInfo.MODID + ":" + "fusion_complete", 2F, 1F, false);
