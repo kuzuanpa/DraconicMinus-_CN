@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
@@ -231,5 +232,13 @@ public class TileInventoryBase extends TileEntity implements IInventory {
 		return false;
 	}
 
+    public void invalidate() {
+        super.invalidate();
+        this.updateContainingBlockInfo();
+        if(worldObj.isRemote)return;
+        for (ItemStack inventoryStack : this.inventoryStacks) {
+            if (inventoryStack!=null)worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord, yCoord+0.5F, zCoord, inventoryStack));
+        }
+    }
 
 }

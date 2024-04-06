@@ -57,6 +57,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     public final SyncableShort craftingStage = new SyncableShort((short) 0, true, false, false);
     public IFusionRecipe activeRecipe = null;
 
+    public int coolingTime = 0;
     @SideOnly(Side.CLIENT)
     public LinkedList<EffectTrackerFusionCrafting> effects;
 
@@ -84,6 +85,10 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             updateEffects();
         }
 
+        if(coolingTime>0){
+            coolingTime--;
+            return;
+        }
         //Update Crafting
         if (isCrafting.value && !worldObj.isRemote) {
 
@@ -110,9 +115,6 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
             long averageCharge = (totalCharge / activeRecipe.getRecipeIngredients().size());
             double percentage = averageCharge / (double) activeRecipe.getIngredientEnergyCost();
-            for (ICraftingInjector pedestal : pedestals) {
-
-            }
                 if (percentage <= 1D && craftingStage.value < 1000) {
                 craftingStage.value = (short) (percentage * 1000D);
                 if (craftingStage.value == 0 && percentage > 0) {
@@ -122,15 +124,16 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             else if (craftingStage.value < 2000) {
                 craftingStage.value += 2;
             }
-            else if (craftingStage.value >= 2000) {
+            else {
                 activeRecipe.craft(this, worldObj, new BlockPos(this.xCoord, this.yCoord, this.zCoord));
-
                 for (ICraftingInjector pedestal : pedestals) {
                     pedestal.onCraft();
                 }
                 //Reset tile... Oops
                 isCrafting.value = false;
                 updateBlock = true;
+                craftingStage.value = 0;
+                coolingTime=20;
             }
         }
         else if (!worldObj.isRemote && !isCrafting.value && craftingStage.value > 0) {
@@ -148,6 +151,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
     }
 
     public void attemptStartCrafting() {
+        if(coolingTime>0)return;
         updateInjectors(worldObj, new BlockPos(this.xCoord, this.yCoord, this.zCoord));
         activeRecipe = RecipeManager.FUSION_REGISTRY.findRecipe(this, worldObj, new BlockPos(this.xCoord, this.yCoord, this.zCoord));
 
@@ -277,7 +281,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @Override
     public boolean canExtractItem(int index, ItemStack stack, int direction) {
-        return index == 1;
+        return !isCrafting.value&&index == 1;
     }
 
 	 @Override
@@ -382,6 +386,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @SideOnly(Side.CLIENT)
     public void updateEffects() {
+        if(!isCrafting.value)effects=null;
         if (effects == null) {
             if (isCrafting.value) {
                 initializeEffects();
@@ -390,8 +395,7 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             }
             return;
         }
-
-//        craftingStage.value = 1500;
+        //        craftingStage.value = 1500;
 
 
         //region Calculate Distance
@@ -467,6 +471,8 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             effects = null;
         }
     }
+
+
 
     @SideOnly(Side.CLIENT)
     public void renderEffects(float partialTicks) {

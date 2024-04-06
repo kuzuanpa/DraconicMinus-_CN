@@ -50,8 +50,6 @@ repositories {
 jar {
    manifest {
        attributes 'FMLAT': 'draconicplus_at.cfg'
-	   attributes 'FMLCorePlugin': 'ru.nanolive.draconicplus.DPHookLoader'
-       attributes 'FMLCorePluginContainsFMLMod': 'true'
    }
 }
 

@@ -1,5 +1,6 @@
 package ru.nanolive.draconicplus.common.fusioncrafting.blocks;
 
+import net.minecraft.block.Block;
 import ru.nanolive.draconicplus.DraconicPlus;
 import ru.nanolive.draconicplus.common.blocks.BlockDP;
 import ru.nanolive.draconicplus.common.blocks.DraconicBlocks;
@@ -57,7 +58,6 @@ public class CraftingInjector extends BlockDP implements ITileEntityProvider {
 	public boolean renderAsNormalBlock() {
 		return false;
 	}
-
     @Override
     public void getSubBlocks(Item item, CreativeTabs tab, List list) {
         list.add(new ItemStack(item, 1, 0));
@@ -169,5 +169,6 @@ public class CraftingInjector extends BlockDP implements ITileEntityProvider {
         }
 		return null;
     }
+
 
 }

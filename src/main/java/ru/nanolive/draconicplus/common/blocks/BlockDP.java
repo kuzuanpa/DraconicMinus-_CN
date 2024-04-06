@@ -3,8 +3,10 @@ package ru.nanolive.draconicplus.common.blocks;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.world.World;
 
 public class BlockDP extends Block {
 
@@ -34,5 +36,4 @@ public class BlockDP extends Block {
     public void registerBlockIcons(IIconRegister iconRegister) {
         this.blockIcon = iconRegister.registerIcon("draconicplus:" + getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
     }
-
 }
