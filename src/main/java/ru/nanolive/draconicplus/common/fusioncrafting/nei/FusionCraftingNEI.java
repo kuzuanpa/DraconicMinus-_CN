@@ -85,7 +85,7 @@ public class FusionCraftingNEI extends TemplateRecipeHandler {
                 
             }
             
-            this.cost = recipe.getEnergyCost();
+            this.cost = recipe.getIngredientEnergyCost();
             this.tier = recipe.getRecipeTier();
         }
 
@@ -113,7 +113,7 @@ public class FusionCraftingNEI extends TemplateRecipeHandler {
             ingred.generatePermutations();
         }
 
-        public int getCost(){
+        public long getCost(){
             return cost;
         }
 
@@ -121,7 +121,7 @@ public class FusionCraftingNEI extends TemplateRecipeHandler {
             return tier;
         }
         
-        private int cost;
+        private long cost;
         private int tier;
 
         List<PositionedStack> ingredList = new ArrayList<>();

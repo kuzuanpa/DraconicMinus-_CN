@@ -147,7 +147,7 @@ public class RecipeManager {
         }
     }
 
-    public static void addFusion(RecipeDifficulty difficulty, ItemStack result, ItemStack catalyst, int energyCost, int craftingTier, Object... ingredients) {
+    public static void addFusion(RecipeDifficulty difficulty, ItemStack result, ItemStack catalyst, long energyCost, int craftingTier, Object... ingredients) {
         if (difficulty != RecipeDifficulty.ALL && RecipeDifficulty.getDifficulty() != difficulty) {
             return;
         }

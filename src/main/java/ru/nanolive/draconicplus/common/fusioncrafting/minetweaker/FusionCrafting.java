@@ -129,7 +129,7 @@ public class FusionCrafting {
     }
 	
     @ZenMethod
-    public static void add(IItemStack output, IItemStack catalyst, int tier, int energyCost, IIngredient[] ingredients) {
+    public static void add(IItemStack output, IItemStack catalyst, int tier, long energyCost, IIngredient[] ingredients) {
         ItemStack out = toStack(output);
         ItemStack cl = toStack(catalyst);
         Object[] in = getObjects(ingredients);

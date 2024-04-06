@@ -3,7 +3,9 @@ package ru.nanolive.draconicplus.common.fusioncrafting.tiles;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
+import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
@@ -103,13 +105,15 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
                 if (pedestal.getStackInPedestal() == null) {
                     continue;
                 }
-                totalCharge += pedestal.getCharge();
+                totalCharge += pedestal.getInjectorCharge();
             }
 
-            int averageCharge = (int) (totalCharge / activeRecipe.getRecipeIngredients().size());
-            double percentage = averageCharge / (double) activeRecipe.getEnergyCost();
+            long averageCharge = (totalCharge / activeRecipe.getRecipeIngredients().size());
+            double percentage = averageCharge / (double) activeRecipe.getIngredientEnergyCost();
+            for (ICraftingInjector pedestal : pedestals) {
 
-            if (percentage <= 1D && craftingStage.value < 1000) {
+            }
+                if (percentage <= 1D && craftingStage.value < 1000) {
                 craftingStage.value = (short) (percentage * 1000D);
                 if (craftingStage.value == 0 && percentage > 0) {
                     craftingStage.value = 1;
@@ -219,16 +223,15 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
 
     @Override
     public void receivePacketFromClient(PacketTileMessage packet, EntityPlayerMP player) {
-    	if(!worldObj.isRemote)
-    	attemptStartCrafting();
+        attemptStartCrafting();
     }
 
     @Override
-    public int getRequiredCharge() {
+    public long getIngredientEnergyCost() {
         if (activeRecipe == null) {
             return 0;
         } else {
-            return activeRecipe.getEnergyCost();
+            return activeRecipe.getIngredientEnergyCost();
         }
     }
 
@@ -370,27 +373,6 @@ public class TileFusionCraftingCore extends TileInventoryBase implements IFusion
             Vec3D spawn = new Vec3D(((TileEntity) pedestal).xCoord, ((TileEntity) (pedestal)).yCoord, ((TileEntity) pedestal).zCoord);
             spawn.add(0.5 + pedestal.getDirection().getFrontOffsetX() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetY() * 0.45, 0.5 + pedestal.getDirection().getFrontOffsetZ() * 0.45);
             effects.add(new EffectTrackerFusionCrafting(worldObj, spawn, new Vec3D(this.xCoord, this.yCoord, this.zCoord), this));
-        }
-        
-        for(int i = 0; i < 4; i++) {
-        	switch(i) {
-        	case(0): {
-                DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(worldObj, new Vec3D(this.xCoord+1.5, this.yCoord, this.zCoord+0.5), new Vec3D(this.xCoord+1.5, this.yCoord, this.zCoord+0.5), this));
-                break;
-        	}
-        	case(1): {
-                DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(worldObj, new Vec3D(this.xCoord+0.5, this.yCoord, this.zCoord+1.5), new Vec3D(this.xCoord+0.5, this.yCoord, this.zCoord+1.5), this));
-        		break;
-        	}
-        	case(2): {
-                DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(worldObj, new Vec3D(this.xCoord-0.5, this.yCoord, this.zCoord+0.5), new Vec3D(this.xCoord-0.5, this.yCoord, this.zCoord+0.5), this));
-        		break;
-        	}
-        	case(3): {
-                DPEffectHandler.effectRenderer.addEffect(ResourceHelperDP.getResource("textures/blocks/fusion_crafting/fusion_particle.png"), new ParticleFusionCrafting(worldObj, new Vec3D(this.xCoord+0.5, this.yCoord, this.zCoord-0.5), new Vec3D(this.xCoord+0.5, this.yCoord, this.zCoord-0.5), this));
-        		break;
-        	}
-        	}
         }
     }
 

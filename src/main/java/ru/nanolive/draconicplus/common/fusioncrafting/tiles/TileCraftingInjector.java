@@ -18,6 +18,7 @@ import ru.nanolive.draconicplus.common.fusioncrafting.IFusionCraftingInventory;
 import ru.nanolive.draconicplus.common.fusioncrafting.blocks.CraftingInjector;
 import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableByte;
 import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableInt;
+import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableLong;
 
 /**
  * Created by brandon3055 on 10/06/2016.
@@ -25,13 +26,15 @@ import ru.nanolive.draconicplus.common.fusioncrafting.network.SyncableInt;
 public class TileCraftingInjector extends TileInventoryBase implements IEnergyReceiver, ICraftingInjector, ISidedInventory {
 
     public final SyncableByte facing = new SyncableByte((byte)0, true, false, true);
-    private final SyncableInt energy = new SyncableInt(0, true, false);
+    private final SyncableLong energy = new SyncableLong(0, true, false);
+    private final SyncableLong energyRequired = new SyncableLong(0, true, false);
     public IFusionCraftingInventory currentCraftingInventory = null;
 
     public TileCraftingInjector(){
         this.setInventorySize(1);
         registerSyncableObject(facing, true);
         registerSyncableObject(energy, true);
+        registerSyncableObject(energyRequired, true);
     }
 
     public int ticker = 0;
@@ -56,14 +59,14 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
         validateCraftingInventory();
         if (currentCraftingInventory != null){
-            int maxRFPerTick = currentCraftingInventory.getRequiredCharge() / 300;
-            int maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getRequiredCharge() - energy.value, maxRFPerTick));
+            long maxRFPerTick = currentCraftingInventory.getIngredientEnergyCost() / 300;
+            long maxAccept = Math.min(maxReceive, Math.min(currentCraftingInventory.getIngredientEnergyCost() - energy.value, maxRFPerTick));
 
             if (!simulate){
                 energy.value += maxAccept;
             }
 
-            return maxAccept;
+            return (int) maxAccept;
         }
 
         return 0;
@@ -71,12 +74,15 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 
     @Override
     public int getEnergyStored(ForgeDirection from) {
+        return (int) energy.value;
+    }
+    public long getEnergyStored() {
         return energy.value;
     }
 
     @Override
     public int getMaxEnergyStored(ForgeDirection from) {
-        return Integer.MAX_VALUE;
+        return ((int) energyRequired.value);
     }
 
     @Override
@@ -118,8 +124,16 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
     }
 
     @Override
-    public int getCharge() {
+    public long getInjectorCharge() {
         return energy.value;
+    }
+
+    @Override
+    public long getEnergyRequired() {
+        return energyRequired.value;
+    }
+    public void setEnergyRequired(long num) {
+        energyRequired.value=num;
     }
 
     private boolean validateCraftingInventory(){
@@ -168,8 +182,9 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 			
 	        facing.value = nbttagcompound.getByte("Facing");
 	        blockMetadata = nbttagcompound.getInteger("Metadata");
-	        energy.value = nbttagcompound.getInteger("Energy");
-			
+         energy.value = nbttagcompound.getLong("Energy");
+         energyRequired.value = nbttagcompound.getLong("EnergyRequired");
+
 	        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
 	        this.inventoryStacks  = new ItemStack[getSizeInventory()];
 	        for (int i = 0; i < nbttaglist.tagCount(); i++) {
@@ -187,8 +202,9 @@ public class TileCraftingInjector extends TileInventoryBase implements IEnergyRe
 			
 	        nbttagcompound.setByte("Facing", facing.value);
 	        nbttagcompound.setInteger("Metadata", blockMetadata);
-	        nbttagcompound.setInteger("Energy", energy.value);
-	        
+        nbttagcompound.setLong("Energy", energy.value);
+        nbttagcompound.setLong("EnergyRequired", energyRequired.value);
+
 	        NBTTagList nbttaglist = new NBTTagList();
 	        for (int i = 0; i < this.inventoryStacks.length; i++) {
 	            if (this.inventoryStacks[i] != null) {

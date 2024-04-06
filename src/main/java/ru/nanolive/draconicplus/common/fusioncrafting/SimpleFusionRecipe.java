@@ -18,13 +18,13 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     protected ItemStack result;
     protected ItemStack catalyst;
     protected List<Object> ingredients;
-    protected int energyCost;
+    protected long energyCost;
     protected int craftingTier;
 
     /**
      * tier 0 = basic, tier 1 = wyvern, tier 2 = awakened, tier 3 = chaotic
      */
-    public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, int energyCost, int craftingTier, Object... ingredients) {
+    public SimpleFusionRecipe(ItemStack result, ItemStack catalyst, long energyCost, int craftingTier, Object... ingredients) {
         this.result = result;
         this.catalyst = catalyst;
         this.ingredients = new LinkedList<Object>();
@@ -140,7 +140,7 @@ public class SimpleFusionRecipe implements IFusionRecipe {
     }
 
     @Override
-    public int getEnergyCost() {
+    public long getIngredientEnergyCost() {
         return energyCost;
     }
 

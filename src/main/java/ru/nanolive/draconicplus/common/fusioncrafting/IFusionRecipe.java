@@ -69,7 +69,7 @@ public interface IFusionRecipe {
      */
     @Deprecated //Use the long method getIngredientEnergyCost()
     default int getEnergyCost() {
-        return 0;
+        return (int) Math.min(Integer.MAX_VALUE,getIngredientEnergyCost());
     }
 
     /**
@@ -77,7 +77,7 @@ public interface IFusionRecipe {
      * by the number of crafting ingredients (not including the item in the crafting core)
      */
     default long getIngredientEnergyCost() {
-        return getEnergyCost();
+        return 0;
     }
 
     /**

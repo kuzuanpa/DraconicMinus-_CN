@@ -35,14 +35,14 @@ public interface IFusionCraftingInventory {
      */
     @Deprecated //use getIngredientEnergyCost
     default int getRequiredCharge() {
-        return 0;
+        return (int) Math.min(getIngredientEnergyCost(),Integer.MAX_VALUE);
     }
 
     /**
      * @return The required =er ingredient energy for the current crafting recipe or 0 if there is no active recipe.
      */
     default long getIngredientEnergyCost() {
-        return getRequiredCharge();
+        return 0;
     }
 
     /**
