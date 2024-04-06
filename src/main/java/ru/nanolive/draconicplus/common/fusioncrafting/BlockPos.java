@@ -91,5 +91,7 @@ public class BlockPos {
     {
         return getAllInBox(Math.min(from.x, to.x), Math.min(from.y, to.y), Math.min(from.z, to.z), Math.max(from.x, to.x), Math.max(from.y, to.y), Math.max(from.z, to.z));
     }
-	
+	public String toString(){
+        return  "BlockPos@"+hashCode()+" [x=" + x + ", y=" + y + ", z=" + z + "] ";
+    }
 }

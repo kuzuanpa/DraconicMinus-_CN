@@ -5,11 +5,13 @@ import java.io.IOException;
 import com.brandon3055.brandonscore.BrandonsCore;
 
 import cpw.mods.fml.relauncher.Side;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.DimensionManager;
 import ru.nanolive.draconicplus.common.fusioncrafting.BlockPos;
 import ru.nanolive.draconicplus.common.fusioncrafting.tiles.TileInventoryBase;
 import ru.nanolive.draconicplus.network.AbstractMessage;
@@ -25,6 +27,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
     public static final byte TAG_INDEX = 6;
 
     public BlockPos tilePos;
+    public int dimID;
     private byte pktIndex;
     public String stringValue = "";
     public float floatValue = 0F;
@@ -40,6 +43,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, boolean booleanValue, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.booleanValue = booleanValue;
         this.dataType = BOOLEAN_INDEX;
@@ -47,6 +51,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, byte byteValue, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.byteValue = byteValue;
         this.dataType = BYTE_INDEX;
@@ -54,6 +59,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, int intValue, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.intValue = intValue;
         this.dataType = INT_INDEX;
@@ -61,6 +67,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, double doubleValue, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.doubleValue = doubleValue;
         this.dataType = DOUBLE_INDEX;
@@ -68,6 +75,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, float floatValue, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.floatValue = floatValue;
         this.dataType = FLOAT_INDEX;
@@ -75,6 +83,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, String stringValue, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.stringValue = stringValue;
         this.dataType = STRING_INDEX;
@@ -82,6 +91,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
     public PacketTileMessage(TileInventoryBase tile, byte pktIndex, NBTTagCompound compound, boolean updateOnReceived) {
         this.tilePos = new BlockPos(tile.xCoord, tile.yCoord, tile.zCoord);
+        this.dimID = tile.getWorldObj().provider.dimensionId;
         this.pktIndex = pktIndex;
         this.compound = compound;
         this.dataType = TAG_INDEX;
@@ -98,6 +108,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
         int z = buffer.readInt();
         tilePos = new BlockPos(x, y, z);
 
+        dimID = buffer.readInt();
 
         switch (dataType) {
             case BOOLEAN_INDEX:
@@ -133,6 +144,7 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
         buffer.writeInt(tilePos.y);
         buffer.writeInt(tilePos.z);
 
+        buffer.writeInt(dimID);
 
         switch (dataType) {
             case BOOLEAN_INDEX:
@@ -193,9 +205,9 @@ public class PacketTileMessage extends AbstractMessage.AbstractServerMessage<Pac
 
 	@Override
 	protected void process(EntityPlayer player, Side side) {
-        TileEntity tile = BrandonsCore.proxy.getMCServer().getEntityWorld().getTileEntity(tilePos.x, tilePos.y, tilePos.z);
+        TileEntity tile = DimensionManager.getWorld(dimID).getTileEntity(tilePos.x,tilePos.y,tilePos.z);
         if (tile instanceof TileInventoryBase) {
-        	((TileInventoryBase) tile).receivePacketFromClient(this, (EntityPlayerMP) player);
+            ((TileInventoryBase) tile).receivePacketFromClient(this, (EntityPlayerMP) player);
         }
 	}
 

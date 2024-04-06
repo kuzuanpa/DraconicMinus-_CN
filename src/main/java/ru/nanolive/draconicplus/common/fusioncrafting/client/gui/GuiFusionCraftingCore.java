@@ -70,6 +70,7 @@ public class GuiFusionCraftingCore extends GuiContainer {
         GuiHelper.drawGuiBaseBackground(this, guiLeft, guiTop, xSize, ySize);
 
         //region Draw Fancy Background
+        ResourceHelperDP.bindTexture("textures/gui/base_gui.png");
 
         //Back
         GuiHelper.drawColouredRect(guiLeft + 3, guiTop + 3, xSize - 6, 110, 0xFF00FFFF);

@@ -115,9 +115,8 @@ public class GuiHelper {
     float f5 = (colour2 >> 16 & 0xFF) / 255.0F;
     float f6 = (colour2 >> 8 & 0xFF) / 255.0F;
     float f7 = (colour2 & 0xFF) / 255.0F;
-    //GL11.glDisable(GL11.GL_TEXTURE_2D);
-    //GL11.glEnable(GL11.GL_BLEND);
-    //GL11.glDisable(GL11.GL_ALPHA);
+    GL11.glDisable(GL11.GL_TEXTURE_2D);
+    GL11.glEnable(GL11.GL_BLEND);
     OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
     GL11.glShadeModel(GL11.GL_SMOOTH);
     Tessellator tessellator = Tessellator.instance;
@@ -130,9 +129,8 @@ public class GuiHelper {
     tessellator.addVertex(right, bottom, zLevel);
     tessellator.draw();
     GL11.glShadeModel(GL11.GL_FLAT);
-    //GL11.glDisable(GL11.GL_BLEND);
-    //GL11.glEnable(GL11.GL_ALPHA);
-    //GL11.glEnable(GL11.GL_TEXTURE_2D);
+    GL11.glDisable(GL11.GL_BLEND);
+    GL11.glEnable(GL11.GL_TEXTURE_2D);
   }
   
   public static void drawEnergyBar(Gui gui, int posX, int posZ, int size, long energy, long maxEnergy) {
@@ -225,9 +223,12 @@ public class GuiHelper {
   public static void drawGradientRect(int posX, int posY, int xSize, int ySize, int colour, int colour2) {
     drawGradientRect(posX, posY, posX + xSize, posY + ySize, colour, colour2, 1.0F, 0.0D);
   }
-  
+
   public static void drawColouredRect(int posX, int posY, int xSize, int ySize, int colour) {
     drawGradientRect(posX, posY, posX + xSize, posY + ySize, colour, colour, 1.0F, 0.0D);
+  }
+  public static void drawColouredRect(int posX, int posY, int xSize, int ySize, int colour,double zLevel) {
+    drawGradientRect(posX, posY, posX + xSize, posY + ySize, colour, colour, 1.0F, zLevel);
   }
   
   public static void drawBorderedRect(int posX, int posY, int xSize, int ySize, int borderWidth, int fillColour, int borderColour) {
